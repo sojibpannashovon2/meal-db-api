@@ -9,31 +9,25 @@ const displayData = info => {
         console.log(element)
         const mealContainer = document.getElementById('meal-container');
         // mealContainer.innerText = '';
-        mealContainer.innerText = '';
+        // mealContainer.innerText = '';
         const mealDiv = document.createElement('div');
-        mealDiv.classList.add('card')
+        // mealDiv.classList.add('card')
+        mealDiv.classList.add('col')
         mealDiv.innerHTML = `
-                <div class="mx-4 mt-4 translate-y-0 ">
-                            <a href="#" blur-shadow-image="true">
-                                <img class="w-auto rounded-lg"
-                                    src="${element.strMealThumb}"
-                                    alt="card image" />
-                            </a>
-                        </div>
-                        <div class="text-secondary flex-1 p-6">
-                            <span class="text-sm font-bold uppercase text-orange-500">${element.strMeal}</span>
-                            <a href="#">
-                                <h5 class="mt-2 font-medium text-blue-300">Dice-catagory: ${element.strCategory}</h5>
-                            </a>
-                            <p class="mb-3">
-                               ${element.strInstructions}
-                            </p>
-                          
-                            
-                        </div>
-                        
+            <div class="card p-3  object-fit-contain  ">
+                <img src="${element.strMealThumb}" class="card-img-top" alt="...">
+                <div class="card-body ">
+                    <h5 class="card-title">${element.strMeal}</h5>
+                    <p class="card-text  ">${element.strTags ? element.strTags : "Not Found !!!"} We are dedicated to addressing food insecurity for homebound seniors. We provide food & pantry items to those in need, including thousands of nutritious meals. Help Seniors Today. Children are in Need. </p>
+                </div>
+                <!-- Button trigger modal -->
+                <button onClick = "singleMealDataload2(${element.idMeal})" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                   Meal-Details
+                </button>
+            </div>
         `
         mealContainer.appendChild(mealDiv);
+
     });
 }
 
@@ -44,5 +38,45 @@ const searchMeal = () => {
     console.log(searchField);
     loadData(searchField);
     searchFieldString.value = '';
+}
+
+const singleMealDataload = idMeal => {
+    // console.log("working", idMeal);
+    const url = `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${idMeal}`
+
+    fetch(url)
+        .then(res => res.json())
+        .then(dot => singleMealDetails(dot.meals[0]))
+        .catch(error => {
+            console.log(error)
+        });
+}
+const singleMealDataload2 = async (idMeal) => {
+    const url2 = `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${idMeal}`
+    try {
+        const res = await fetch(url2);
+        const details = await res.json();
+        singleMealDetails(details.meals[0]);
+    }
+    catch (error) {
+        console.log(error);
+        console.log("Its not working babe");
+    }
+}
+
+
+
+
+const singleMealDetails = id => {
+    console.log(id)
+    document.getElementById('exampleModalLabel').innerText = id.strMeal;
+
+    const modalBody = document.getElementById('modal-body')
+    modalBody.innerHTML = `
+                    <img class="img-fluid"  src="${id.strMealThumb}">
+                   
+                 
+                    `
+
 }
 loadData('rice');
